@@ -1,6 +1,7 @@
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import React, {Component} from "react";
 import NavContainer from 'containers/NavContainer/NavContainer';
+import AuthenticateContainer from 'containers/AuthenticateContainer/AuthenticateContainer';
 
 class Routes extends Component {
     render () {
@@ -10,6 +11,7 @@ class Routes extends Component {
                 <div className="container">
                     <NavContainer/>
                     <Switch>
+                        <Router exact path="/" component={AuthenticateContainer} />
                     </Switch>
                 </div>
             </Router>

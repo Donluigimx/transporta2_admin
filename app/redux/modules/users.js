@@ -1,14 +1,14 @@
 const AUTH_USER = 'AUTH_USER';
 const UNAUTH_USER = 'UNAUTH_USER';
 
-export function authUser(uid) {
+export function authUser(token) {
     return {
         type: AUTH_USER,
-        uid,
+        token,
     }
 }
 
-export function unauthUser(uid) {
+export function unauthUser() {
     return {
         type: UNAUTH_USER,
     }
@@ -24,7 +24,7 @@ export default function users (state = initialUsersState, action) {
         case AUTH_USER:
             return {
                 ...state,
-                isAuthed: false,
+                isAuthed: true,
                 authedToken: action.token,
             };
         case UNAUTH_USER:

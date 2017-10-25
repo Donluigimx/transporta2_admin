@@ -4,7 +4,7 @@ export default (props) => {
     return (
         <div className="block">
             <nav className="navbar">
-                <button class="button navbar-burger">
+                <button className="button navbar-burger">
                     <span>a</span>
                     <span>c</span>
                     <span>b</span>

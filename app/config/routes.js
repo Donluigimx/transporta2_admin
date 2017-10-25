@@ -11,7 +11,7 @@ class Routes extends Component {
                 <div className="container">
                     <NavContainer/>
                     <Switch>
-                        <Router exact path="/" component={AuthenticateContainer} />
+                        <Route exact path="/auth" component={AuthenticateContainer} />
                     </Switch>
                 </div>
             </Router>

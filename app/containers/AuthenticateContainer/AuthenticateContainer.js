@@ -1,23 +1,28 @@
 import React, {Component} from 'react';
+import PropTypes from 'prop-types';
 import Authenticate from "components/Authenticate/Authenticate";
-import {authUser} from "api/auth";
 import {connect} from "react-redux"
 import {bindActionCreators} from "redux";
 import * as userActionCreators from "redux/modules/users";
+import {Redirect} from 'react-router-dom';
 
 class AuthenticateContainer extends Component {
 
+    static propTypes = {
+        isAuthed: PropTypes.bool.isRequired,
+        authedToken: PropTypes.string.isRequired,
+        fetchAndHandleAuthedUser: PropTypes.func.isRequired
+    };
+
     handleAuth = async (username, password) => {
-        const response = await authUser(username, password);
-        this.props.authUser(response.id)
+        this.props.fetchAndHandleAuthedUser(username, password)
     };
 
     render() {
-        console.log(this.props);
         return (
             <div>
                 {this.props.isAuthed
-                    ? <p>Hola {this.props.authedToken}</p>
+                    ? <Redirect to={{pathname: '/home'}}/>
                     : <Authenticate
                     onAuth={this.handleAuth} />}
             </div>

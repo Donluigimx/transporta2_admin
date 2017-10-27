@@ -1,12 +1,14 @@
 import {auth} from 'api/auth';
+import {createReducer} from "redux/utils";
 
 const AUTH_USER = 'AUTH_USER';
 const UNAUTH_USER = 'UNAUTH_USER';
 
-function authUser(token) {
+function authUser(token, userId) {
     return {
         type: AUTH_USER,
         token,
+        userId,
     }
 }
 
@@ -16,38 +18,42 @@ function unauthUser() {
     }
 }
 
-const initialUsersState = {
-    isAuthed: false,
-    authedToken: ''
-};
-
 export function fetchAndHandleAuthedUser(username, password) {
     return async dispatch => {
         try {
             const response = await auth(username, password);
-            console.log(response);
-            dispatch(authUser(response.id));
+            if (response.statusCode === 401) {
+                return
+            }
+            dispatch(authUser(response.id, response.userId));
         } catch (error) {
             console.log(error);
         }
     }
 }
 
-export default function users (state = initialUsersState, action) {
-    switch (action.type) {
-        case AUTH_USER:
+export default createReducer(
+    {
+        isAuthed: false,
+        authedToken: '',
+        userId: '',
+    },
+    {
+        AUTH_USER: (state, action) => {
             return {
                 ...state,
                 isAuthed: true,
                 authedToken: action.token,
-            };
-        case UNAUTH_USER:
+                userId: action.userId,
+            }
+        },
+        UNAUTH_USER: (state, action) => {
             return {
                 ...state,
                 isAuthed: false,
                 authedToken: '',
-            };
-        default:
-            return state
+                userId: '',
+            }
+        }
     }
-}
+)

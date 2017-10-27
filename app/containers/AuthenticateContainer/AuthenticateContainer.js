@@ -19,6 +19,7 @@ class AuthenticateContainer extends Component {
     };
 
     render() {
+        console.log(this.props);
         return (
             <div>
                 {this.props.isAuthed
@@ -33,7 +34,8 @@ class AuthenticateContainer extends Component {
 export default connect(
     (state) => ({
         isAuthed: state.isAuthed,
-        authedToken: state.authedToken
+        authedToken: state.authedToken,
+        userId: state.userId,
     }),
     (dispatch) => bindActionCreators(userActionCreators, dispatch)
 )(AuthenticateContainer);

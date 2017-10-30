@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Link} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 
 class Home extends Component {
 
@@ -7,9 +7,9 @@ class Home extends Component {
         return (
             <div className="tabs is-centered">
                 <ul>
-                    <li><Link to="/routes">Rutas</Link></li>
-                    <li><Link to="/buses">Camiones</Link></li>
-                    <li><Link to="/bus_stops">Paradas de Camiones</Link></li>
+                    <li><NavLink to="/routes" activeClassName="is-active">Rutas</NavLink></li>
+                    <li><NavLink to="/buses" activeClassName="is-active">Camiones</NavLink></li>
+                    <li><NavLink to="/bus_stops" activeClassName="is-active">Paradas de Camiones</NavLink></li>
                 </ul>
             </div>
         )

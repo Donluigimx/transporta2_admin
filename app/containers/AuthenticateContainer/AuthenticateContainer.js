@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 import Authenticate from "components/Authenticate/Authenticate";
-import {connect} from "react-redux"
+import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as userActionCreators from "redux/modules/users";
 import {Redirect} from 'react-router-dom';
@@ -19,7 +19,6 @@ class AuthenticateContainer extends Component {
     };
 
     render() {
-        console.log(this.props);
         return (
             <div>
                 {this.props.isAuthed
@@ -33,9 +32,9 @@ class AuthenticateContainer extends Component {
 
 export default connect(
     (state) => ({
-        isAuthed: state.isAuthed,
-        authedToken: state.authedToken,
-        userId: state.userId,
+        isAuthed: state.users.isAuthed,
+        authedToken: state.users.authedToken,
+        userId: state.users.userId,
     }),
     (dispatch) => bindActionCreators(userActionCreators, dispatch)
 )(AuthenticateContainer);

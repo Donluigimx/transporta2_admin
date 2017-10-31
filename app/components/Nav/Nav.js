@@ -8,7 +8,7 @@ export default (props) => {
                 <div className="navbar-menu is-active">
                     <div className="navbar-end">
                     {props.isAuthed
-                        ? <a className="navbar-item">
+                        ? <a className="navbar-item" onClick={props.unauth}>
                             Cerrar Sesión
                         </a>
                         : <Link

@@ -1,4 +1,4 @@
-import {auth} from 'api/auth';
+import {auth, unauth} from 'api/auth';
 import {createReducer} from "redux/utils";
 
 const AUTH_USER = 'AUTH_USER';
@@ -26,9 +26,33 @@ export function fetchAndHandleAuthedUser(username, password) {
                 return
             }
             dispatch(authUser(response.id, response.userId));
+            localStorage.setItem('transporta_auth', JSON.stringify({
+                authedToken: response.id,
+                userId: response.userId
+            }))
         } catch (error) {
             console.log(error);
         }
+    }
+}
+
+export function getAuthToken() {
+    return dispatch => {
+        const data = JSON.parse(localStorage.getItem('transporta_auth'));
+        if (data) {
+            dispatch(authUser(data.authedToken, data.userId));
+        }
+    }
+}
+
+export function HandleUnAuthUser() {
+    return async (dispatch, getState) => {
+        const response = await unauth(getState().authedToken);
+        if (response.status === 401) {
+            return;
+        }
+        localStorage.removeItem('transporta_auth');
+        dispatch(unauthUser());
     }
 }
 

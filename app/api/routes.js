@@ -13,3 +13,12 @@ export async function createRoute(number, origin, destination, token) {
 
     return response.json();
 }
+
+export async function getRoutes(token) {
+    const response = await fetch(`${url}/api/Routes?access_token=${token}`);
+    if (response.status === 200) {
+        return await response.json();
+    } else {
+        return []
+    }
+}

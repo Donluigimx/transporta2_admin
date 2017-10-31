@@ -3,16 +3,13 @@ import ReactDom from 'react-dom';
 import Routes from 'config/routes';
 import 'bulma';
 import {createStore, applyMiddleware, combineReducers} from "redux";
-import users, {getAuthToken} from "redux/modules/users";
-import routes from "redux/modules/routes";
+import {getAuthToken} from "redux/modules/users";
+import {reducer as appReducer} from "redux/reducer";
 import {Provider} from 'react-redux'
 import thunk from 'redux-thunk';
 
-const store = createStore(combineReducers(
-    {
-        users,
-        routes,
-    }),
+const store = createStore(
+    appReducer,
     applyMiddleware(thunk)
 );
 

@@ -5,23 +5,17 @@ import CreateRoute from "components/Routes/CreateRoute";
 import {connect} from "react-redux";
 import * as routeActionCreators from "redux/modules/routes";
 import {bindActionCreators} from "redux";
+import ListRoutes from "../../components/Routes/ListRoutes";
 
 class RoutesContainer extends Component {
 
-    createData = {
-        route: '',
-        origin: '',
-        destination: ''
+    createRoute = (values) => {
+        this.props.fetchAndCreateRoute(values.route, values.origin, values.destination);
     };
 
-    createRoute = () => {
-        this.props.fetchAndCreateRoute(this.createData.route, this.createData.origin, this.createData.destination);
-        this.createData.route = this.createData.origin = this.createData.destination = '';
-    };
-
-    handleChange = (e) => {
-        this.createData[e.target.name] = e.target.value;
-    };
+    componentDidMount() {
+        this.props.fetchAndRetrieveListRoutes();
+    }
 
     render () {
         console.log(this.props);
@@ -33,11 +27,13 @@ class RoutesContainer extends Component {
                 <div className="column">
                     <Route path="/routes/create" render={props =>
                         (<CreateRoute
-                                createRoute={this.createRoute}
+                                onSubmit={this.createRoute}
                                 creatingRoute={this.props.creatingRoute}
-                                createData={this.createData}
                                 handleInputChange={this.handleChange}/>
                         )}/>
+                    <Route path="/routes/list" render={props =>(
+                        <ListRoutes routesList={this.props.routesList}/>
+                    )}/>
                 </div>
             </div>
         )

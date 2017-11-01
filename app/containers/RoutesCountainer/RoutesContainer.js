@@ -13,6 +13,10 @@ class RoutesContainer extends Component {
         this.props.fetchAndCreateRoute(values.route, values.origin, values.destination);
     };
 
+    detailRoute = (id) => {
+        this.props.fetchAndRetrieveRoute(id);
+    };
+
     componentDidMount() {
         this.props.fetchAndRetrieveListRoutes();
     }
@@ -34,6 +38,11 @@ class RoutesContainer extends Component {
                     <Route path="/routes/list" render={props =>(
                         <ListRoutes routesList={this.props.routesList}/>
                     )}/>
+                    <Route path="/routes/detail/:id" render={props => {
+                        let {params} = props.match;
+                        this.detailRoute(params.id);
+                        return <div>asd</div>
+                    }}/>
                 </div>
             </div>
         )
@@ -42,8 +51,7 @@ class RoutesContainer extends Component {
 
 export default connect(
     state => ({
-        routesList: state.routes.routesList,
-        creatingRoute: state.routes.creatingRoute,
+        ...state.routes,
     }),
     dispatch => bindActionCreators(routeActionCreators, dispatch)
 )(RoutesContainer);

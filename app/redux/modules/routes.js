@@ -1,11 +1,12 @@
 import {createReducer} from "redux/utils";
 import * as api_routes from "api/routes";
-import {getRoutes} from "../../api/routes";
+import {get_route, getRouteBuses, getRouteBusStops, getRoutes} from "../../api/routes";
 import {reset} from "redux-form";
 
 const LIST_ROUTES = 'LIST_ROUTES';
 const CREATE_ROUTE = 'CREATE_ROUTE';
 const CREATE_ROUTE_FINISHED = 'CREATE_ROUTE_FINISHED';
+const GET_ROUTE = 'GET_ROUTE';
 
 function list_routes(routes) {
     return {
@@ -24,6 +25,15 @@ function finish_route_creation(route) {
     return {
         type: CREATE_ROUTE_FINISHED,
         route
+    }
+}
+
+function getRoute(route, buses, busStops) {
+    return {
+        type: GET_ROUTE,
+        route,
+        buses,
+        busStops,
     }
 }
 
@@ -46,6 +56,22 @@ export function fetchAndCreateRoute(route, origin, destination) {
             const response = await api_routes.createRoute(route, origin, destination, getState().users.authedToken);
             dispatch(finish_route_creation(response));
             dispatch(reset('createRouteForm'));
+        } catch (error) {
+            console.log(error);
+        }
+    }
+}
+
+export function fetchAndRetrieveRoute(id) {
+    return async (dispatch, getState) => {
+        const authedToken = getState().users.authedToken;
+        try {
+            const [route, buses, busStops] = await Promise.all([
+                get_route(id, authedToken),
+                getRouteBuses(id, authedToken),
+                getRouteBusStops(id, authedToken)
+            ]);
+            dispatch(getRoute(route, buses, busStops));
         } catch (error) {
             console.log(error);
         }
@@ -77,6 +103,14 @@ export default createReducer(
                 creatingRoute: false,
                 routesList: state.routesList
             }
-        }
+        },
+        GET_ROUTE: (state, action) => ({
+            ...state,
+            [action.route.id]: {
+                route: action.route,
+                buses: action.buses,
+                busStops: action.busStops,
+            }
+        }),
     }
 )

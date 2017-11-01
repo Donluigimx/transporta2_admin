@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from "react-router-dom";
 
 export default props => {
     return(
@@ -20,7 +21,7 @@ export default props => {
                             <td>{route.id}</td>
                             <td>{route.origin}</td>
                             <td>{route.destination}</td>
-                            <td><button className="button is-primary">Ver</button></td>
+                            <td><Link to={`/routes/detail/${route.id}`} className="button is-primary">Ver</Link></td>
                         </tr>
                     )
                 })}

@@ -22,3 +22,18 @@ export async function getRoutes(token) {
         return []
     }
 }
+
+export async function get_route(id, token) {
+    const response = await fetch(`${url}/api/Routes/${id}?access_token=${token}`);
+    return await response.json();
+}
+
+export async function getRouteBuses(id, token) {
+    const response = await fetch(`${url}/api/Routes/${id}/buses?access_token=${token}`);
+    return await response.json();
+}
+
+export async function getRouteBusStops(id, token) {
+    const response = await fetch(`${url}/api/Routes/${id}/busStops?access_token=${token}`);
+    return await response.json();
+}

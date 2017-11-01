@@ -1,23 +1,25 @@
 import React from 'react';
+import {Field, reduxForm} from "redux-form";
 
-export default props => {
-    let route = '';
-    let origin = '';
-    let destination = '';
+export default reduxForm({
+    form: 'createRouteForm'
+})(props => {
+
+    const {handleSubmit} = props;
 
     return (
-        <div>
+        <form onSubmit={handleSubmit}>
             <div className="field">
                 <label className="label">Ruta</label>
-                <input name="route" value={props.route} type="text" className="input" onChange={props.handleInputChange}/>
+                <Field name="route" component="input" type="text" className="input"/>
             </div>
             <div className="field">
                 <label className="label">Origen</label>
-                <input name="origin" value={props.origin} type="text" className="input" onChange={props.handleInputChange}/>
+                <Field name="origin" component="input" type="text" className="input"/>
             </div>
             <div className="field">
                 <label className="label">Destino</label>
-                <input name="destination" value={props.destination} type="text" className="input" onChange={props.handleInputChange}/>
+                <Field name="destination" component="input" type="text" className="input"/>
             </div>
             <div className="field">
                 <div className="control">
@@ -32,6 +34,6 @@ export default props => {
                     <img src="https://m.popkey.co/163fce/Llgbv_s-200x150.gif" alt="" className="is-centered"/>
                 </div>
             </div>
-        </div>
+        </form>
     )
-}
+})

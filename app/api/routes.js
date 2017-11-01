@@ -11,7 +11,7 @@ export async function createRoute(number, origin, destination, token) {
         })
     });
 
-    return response.json();
+    return await response.json();
 }
 
 export async function getRoutes(token) {
@@ -35,5 +35,20 @@ export async function getRouteBuses(id, token) {
 
 export async function getRouteBusStops(id, token) {
     const response = await fetch(`${url}/api/Routes/${id}/busStops?access_token=${token}`);
+    return await response.json();
+}
+
+export async function createRouteBusStop(id, lat, lng, token) {
+    const response = await fetch(`${url}/api/Routes/${id}/busStops?access_token=${token}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            point: {
+                lat, lng,
+            }
+        })
+    });
     return await response.json();
 }

@@ -1,12 +1,15 @@
 import {createReducer} from "redux/utils";
 import * as api_routes from "api/routes";
-import {get_route, getRouteBuses, getRouteBusStops, getRoutes} from "../../api/routes";
+import {createRouteBusStop, get_route, getRouteBuses, getRouteBusStops, getRoutes} from "../../api/routes";
 import {reset} from "redux-form";
 
 const LIST_ROUTES = 'LIST_ROUTES';
 const CREATE_ROUTE = 'CREATE_ROUTE';
 const CREATE_ROUTE_FINISHED = 'CREATE_ROUTE_FINISHED';
 const GET_ROUTE = 'GET_ROUTE';
+const CLICK_MAP = 'CLICK_MAP';
+const STOP_CLICK_MAP = 'STOP_CLICK_MAP';
+const CREATE_ROUTE_BUS_STOP = 'CREATE_ROUTE_BUS_STOP';
 
 function list_routes(routes) {
     return {
@@ -34,6 +37,27 @@ function getRoute(route, buses, busStops) {
         route,
         buses,
         busStops,
+    }
+}
+
+function clickMap(lat,lng) {
+    return {
+        type: CLICK_MAP,
+        lat,
+        lng,
+    }
+}
+
+function stopClickMap() {
+    return {
+        type: STOP_CLICK_MAP
+    }
+}
+
+function actionCreateRouteBusStop(busStop, routeId) {
+    return {
+        type: CREATE_ROUTE_BUS_STOP,
+        busStop, routeId,
     }
 }
 
@@ -78,10 +102,30 @@ export function fetchAndRetrieveRoute(id) {
     }
 }
 
+export function startClickAction(lat, lng) {
+    return (dispatch, getState) => dispatch(clickMap(lat, lng));
+}
+
+export function stopClickAction() {
+    return dispatch => dispatch(stopClickMap())
+}
+
+export function fetchAndHandleRouteBusStop(routeId) {
+    return async (dispatch, getState) => {
+        const lat = getState().routes.lat, lng = getState().routes.lng;
+        const response = await createRouteBusStop(routeId, lat, lng, getState().users.authedToken);
+        dispatch(actionCreateRouteBusStop(response, routeId));
+        dispatch(stopClickMap());
+    }
+}
+
 export default createReducer(
     {
         routesList: [],
-        creatingRoute: false
+        creatingRoute: false,
+        mapIsClicked: false,
+        lat: 0,
+        lng: 0
     },
     {
         LIST_ROUTES: (state, action) => {
@@ -112,5 +156,23 @@ export default createReducer(
                 busStops: action.busStops,
             }
         }),
+        CLICK_MAP: (state, action) => ({
+            ...state,
+            lat: action.lat,
+            lng: action.lng,
+            mapIsClicked: true
+        }),
+        STOP_CLICK_MAP: (state, action) => ({
+            ...state,
+            lat: 0,
+            lng: 0,
+            mapIsClicked: false
+        }),
+        CREATE_ROUTE_BUS_STOP: (state, action) => {
+            state[action.routeId].busStops.push(action.busStop);
+            return {
+                ...state
+            }
+        }
     }
 )

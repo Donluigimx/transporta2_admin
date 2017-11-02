@@ -8,7 +8,6 @@ class Home extends Component {
             <div className="tabs is-centered">
                 <ul>
                     <li><NavLink to="/routes" activeClassName="is-active">Rutas</NavLink></li>
-                    <li><NavLink to="/buses" activeClassName="is-active">Camiones</NavLink></li>
                     <li><NavLink to="/bus_stops" activeClassName="is-active">Paradas de Camiones</NavLink></li>
                 </ul>
             </div>

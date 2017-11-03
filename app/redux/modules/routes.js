@@ -1,6 +1,6 @@
 import {createReducer} from "redux/utils";
 import * as api_routes from "api/routes";
-import {createRouteBusStop, get_route, getRouteBuses, getRouteBusStops, getRoutes} from "../../api/routes";
+import {createRouteBusStop, get_route, getRouteBuses, getRouteBusStops, getRoutes} from "api/routes";
 import {reset} from "redux-form";
 
 const LIST_ROUTES = 'LIST_ROUTES';

@@ -5,6 +5,7 @@ import AuthenticateContainer from 'containers/AuthenticateContainer/Authenticate
 import {PrivateRoute} from "config/utils";
 import RoutesContainer from "containers/RoutesCountainer/RoutesContainer";
 import Menu from "components/Nav/Menu";
+import BusStopContainer from "containers/BusStopContainer/BusStopContainer";
 
 class Routes extends Component {
     render () {
@@ -20,6 +21,7 @@ class Routes extends Component {
                             <Switch>
                                 <Route exact path="/auth" component={AuthenticateContainer} redirect="/home"/>
                                 <Route path="/routes" component={RoutesContainer}/>
+                                <Route path="/bus_stops" component={BusStopContainer}/>
                             </Switch>
                         </div>
                     </div>

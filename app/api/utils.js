@@ -1,9 +1,7 @@
 
-export const handleSubmit = (response, defaultVal) => {
+export const handleSubmit = async (response, defaultVal) => {
     if (response.status === 200 || response.status === 201) {
-        return response.json();
-    } else if (response.status === 201) {
-        return response;
+        return await response.json();
     } else if (response.status === 400 || response.status === 404) {
         return defaultVal;
     }

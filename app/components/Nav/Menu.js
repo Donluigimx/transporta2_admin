@@ -11,7 +11,8 @@ export default props => {
             </ul>
             <p className="menu-label">Paradas de camiones</p>
             <ul className="menu-list">
-                <li><NavLink to="/bus_stops">Mostrar paradas de camiones</NavLink></li>
+                <li><NavLink to="/bus_stops" activeClassName="is-active">Mostrar paradas de camiones</NavLink></li>
+                <li><NavLink to="/bus_stops/create" activeClassName="is-active">Crear parada de camión</NavLink></li>
             </ul>
         </aside>
     )

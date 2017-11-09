@@ -1,13 +1,14 @@
 
 
 import React, {Component} from "react";
-import {Route} from "react-router-dom";
+import {Route, Link} from "react-router-dom";
 import GoogleMapReact from "google-map-react";
 import {connect} from "react-redux";
 import {bindActionCreators} from "redux";
 import * as busStopsActionCreators from "redux/modules/bus_stops";
 import Marker from "components/Map/Marker";
 import CreateBusStop, {CreateBusStopMessage} from "components/BusStops/CreateBusStop";
+import RoutesList from "components/BusStops/RoutesList";
 
 class BusStopContainer extends Component {
 
@@ -15,10 +16,15 @@ class BusStopContainer extends Component {
         this.props.fetchBusStops();
     }
 
-    onClickHandler = ({lat, lng}) => {
+    onMapClickHandler = ({lat, lng}) => {
         if (this.props.location.pathname === '/bus_stops/create') {
             this.props.handleMapClicked(lat, lng);
         }
+    };
+
+    onMarkerClickHandler = (id) => {
+        const {history} = this.props;
+        history.push(`/bus_stops/detail/${id}`);
     };
 
     createBusStop = () => {
@@ -29,10 +35,14 @@ class BusStopContainer extends Component {
         this.props.restoreMapClicked();
     };
 
+    retrieveRoute = (id) => {
+        this.props.fetchBusStop(id);
+    };
+
     render() {
 
         let point;
-        const {mapClicked, busStops, location, clickLat, clickLng} = this.props;
+        const {mapClicked, busStops, location, clickLat, clickLng, busStopClicked} = this.props;
 
         point = {
             lat: 21.510428,
@@ -49,6 +59,23 @@ class BusStopContainer extends Component {
                             cancelCreateBusStop={this.cancelCreateBusStop} />
                     : <CreateBusStopMessage />
                 )}/>
+                <Route exact path="/bus_stops/detail/:id" render={ ({ match }) => {
+                    const { params } = match;
+                    if (!this.props.hasOwnProperty(params.id)) {
+                        this.retrieveRoute(params.id);
+                        return <div>Cargando</div>
+                    } else {
+                        const {busStop, routes} = this.props[params.id];
+                        return (
+                            <div>
+                                <RoutesList 
+                                    busStop={busStop} 
+                                    routes={routes} />
+                                <Link to="/bus_stops" className="button">Regresar</Link>
+                            </div>
+                        )
+                    }
+                }}/>
                 <div style={{width: '500px', height: '500px', marginTop:'10px'}} className="is-centered">
                     <GoogleMapReact
                         bootstrapURLKeys={{
@@ -57,7 +84,7 @@ class BusStopContainer extends Component {
                         }}
                         center={point}
                         zoom={8}
-                        onClick={this.onClickHandler} >
+                        onClick={this.onMapClickHandler} >
                         {
                             location.pathname === '/bus_stops'
                             ? busStops.map( (busStop, index) => (
@@ -65,13 +92,24 @@ class BusStopContainer extends Component {
                                     lat={busStop.point.lat}
                                     lng={busStop.point.lng}
                                     pulse={false}
-                                    bounce={false} />
+                                    bounce={false}
+                                    clickAction={this.onMarkerClickHandler}
+                                    busStopId={busStop.id} />
                             ))
                             : ''
                         }
                         {
                             (location.pathname === '/bus_stops/create' && mapClicked)
                             ? <Marker lat={clickLat} lng={clickLng} pulse={true} bounce={true}/> : ''
+                        }
+                        {
+                            (location.pathname === `/bus_stops/detail/${busStopClicked}` && this.props.hasOwnProperty(busStopClicked))
+                            ? <Marker 
+                                lat={this.props[busStopClicked].busStop.point.lat} 
+                                lng={this.props[busStopClicked].busStop.point.lng}
+                                pulse={true}
+                                bounce={true} />
+                            : ''
                         }
                     </GoogleMapReact>
                 </div>

@@ -6,6 +6,7 @@ const RETRIEVE_BUS_STOPS = 'RETRIEVE_BUS_STOPS';
 const STOP_MAP_CLICKED = 'STOP_MAP_CLICKED';
 const INSERT_BUS_STOP = 'INSERT_BUS_STOP';
 const MAP_CLICKED = 'MAP_CLICKED';
+const GET_BUS_STOP = 'GET_BUS_STOP';
 
 const retrieveBusStops = busStops => ({
     type: RETRIEVE_BUS_STOPS,
@@ -24,6 +25,11 @@ const mapClicked = (clickLat, clickLng) => ({
 const insertBusStop = (busStop) => ({
     type: INSERT_BUS_STOP,
     busStop
+});
+
+const getBusStop = (busStop, routes) => ({
+    type: GET_BUS_STOP,
+    busStop, routes
 });
 
 export function fetchBusStops() {
@@ -46,6 +52,17 @@ export function fetchAndCreateBusStop() {
     }
 }
 
+export function fetchBusStop(id) {
+    return async (dispatch, getState) => {
+        const {authedToken} = getState().users;
+        const [busStop, routes] = await Promise.all([
+            busStopsApi.fetchBusStop(id, authedToken),
+            busStopsApi.fetchBusStopRoutes(id, authedToken)
+        ]);
+        dispatch(getBusStop(busStop, routes));
+    }
+}
+
 export function restoreMapClicked() {
     return dispatch => dispatch(stopMapClicked());
 }
@@ -53,6 +70,7 @@ export function restoreMapClicked() {
 export default createReducer(
     {
         busStops: [],
+        busStopClicked: null,
         mapClicked: false,
         clickLat: null,
         clickLng: null
@@ -78,6 +96,13 @@ export default createReducer(
             return {
                 ...state
             }
-        }
+        },
+        GET_BUS_STOP : (state, {busStop, routes}) => ({
+            ...state,
+            busStopClicked: busStop.id,
+            [busStop.id]: {
+                busStop, routes,
+            }
+        })
     }
 )

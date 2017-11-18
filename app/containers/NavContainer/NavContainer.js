@@ -16,7 +16,6 @@ class NavContainer extends Component {
                 <Nav
                     isAuthed={this.props.isAuthed}
                     unauth={() => this.unAuth()}/>
-                {this.props.isAuthed ? <Home/> : ''}
                 <br/>
             </div>
         )

@@ -1,4 +1,4 @@
-const url = 'http://transporta2.cf';
+const url = 'http://api.mueve.me';
 
 export async function createRoute(number, origin, destination, token) {
     const response = await fetch(`${url}/api/Routes?access_token=${token}`, {

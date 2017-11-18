@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import './style.css';
 
-const Marker = props => (
-    <div>
-        <div className={`pin ${props.bounce ? 'bounce':''}`}/>
-        {props.pulse
+const Marker = ({bounce, pulse, clickAction, busStopId}) => (
+    <div style={{cursor: 'pointer'}} onClick={ () => clickAction(busStopId)}>
+        <div className={`pin ${bounce ? 'bounce':''}`}/>
+        {pulse
             ?<div className='pulse'/>
             : ''
         }
@@ -15,6 +15,8 @@ const Marker = props => (
 Marker.propTypes = {
     bounce: PropTypes.bool.isRequired,
     pulse: PropTypes.bool.isRequired,
+    clickAction: PropTypes.func,
+    busStopId: PropTypes.string,
 };
 
 export default Marker;

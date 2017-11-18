@@ -3,14 +3,15 @@ import GoogleMapReact from "google-map-react";
 import Marker from "components/Map/Marker";
 
 export default props => {
+    let point;
 
     if (props.busStops.length > 0) {
-        const point = {
+        point = {
             lat: props.busStops[0].point.lat,
             lng: props.busStops[0].point.lng
         };
     } else {
-        const point = {
+        point = {
             lat: 21.510428,
             lng: -101.8828763
         }
@@ -58,7 +59,7 @@ export default props => {
                         key: "AIzaSyCqywC5RqH6dyL8U6yMsplfVY-VVD_isX8",
                         language: "es"
                     }}
-                    center={{lat: 21.510428, lng: -101.8828763}}
+                    center={point}
                     zoom={8}
                     onClick={props.onClick}>
                     {props.mapIsClicked

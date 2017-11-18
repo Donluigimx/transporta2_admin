@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import RoutesMenu from "components/Routes/RoutesMenu";
+import RoutesMenu from "components/Nav/Menu";
 import {Route} from "react-router-dom";
 import CreateRoute from "components/Routes/CreateRoute";
 import {connect} from "react-redux";
@@ -37,40 +37,35 @@ class RoutesContainer extends Component {
     render () {
         console.log(this.props);
         return (
-            <div className="columns">
-                <div className="column is-one-third">
-                    <RoutesMenu/>
-                </div>
-                <div className="column">
-                    <Route path="/routes/create" render={props =>
-                        (<CreateRoute
-                                onSubmit={this.createRoute}
-                                creatingRoute={this.props.creatingRoute}
-                                handleInputChange={this.handleChange}/>
-                        )}/>
-                    <Route path="/routes/list" render={props =>(
-                        <ListRoutes routesList={this.props.routesList}/>
+            <div>
+                <Route path="/routes/create" render={props =>
+                    (<CreateRoute
+                            onSubmit={this.createRoute}
+                            creatingRoute={this.props.creatingRoute}
+                            handleInputChange={this.handleChange}/>
                     )}/>
-                    <Route path="/routes/detail/:id" render={props => {
-                        let {params} = props.match;
-                        if (!this.props.hasOwnProperty(params.id)) {
-                            this.detailRoute(params.id);
-                            return <div>Cargando...</div>
-                        } else {
-                            return <RouteDetail
-                                route={this.props[params.id].route}
-                                buses={this.props[params.id].buses}
-                                busStops={this.props[params.id].busStops}
-                                mapIsClicked={this.props.mapIsClicked}
-                                lat={this.props.lat}
-                                lng={this.props.lng}
-                                onClick={this.onClickMap}
-                                cancelClick={this.unClickMap}
-                                createBusStop={this.createBusStop}/>
-                        }
+                <Route path="/routes/list" render={props =>(
+                    <ListRoutes routesList={this.props.routesList}/>
+                )}/>
+                <Route path="/routes/detail/:id" render={props => {
+                    let {params} = props.match;
+                    if (!this.props.hasOwnProperty(params.id)) {
+                        this.detailRoute(params.id);
+                        return <div>Cargando...</div>
+                    } else {
+                        return <RouteDetail
+                            route={this.props[params.id].route}
+                            buses={this.props[params.id].buses}
+                            busStops={this.props[params.id].busStops}
+                            mapIsClicked={this.props.mapIsClicked}
+                            lat={this.props.lat}
+                            lng={this.props.lng}
+                            onClick={this.onClickMap}
+                            cancelClick={this.unClickMap}
+                            createBusStop={this.createBusStop}/>
+                    }
 
-                    }}/>
-                </div>
+                }}/>
             </div>
         )
     }

@@ -1,12 +1,15 @@
 
 import {createReducer} from "redux/utils";
 import * as busStopsApi from "api/bus_stops";
+import * as routesApi from "api/routes";
 
 const RETRIEVE_BUS_STOPS = 'RETRIEVE_BUS_STOPS';
 const STOP_MAP_CLICKED = 'STOP_MAP_CLICKED';
 const INSERT_BUS_STOP = 'INSERT_BUS_STOP';
 const MAP_CLICKED = 'MAP_CLICKED';
 const GET_BUS_STOP = 'GET_BUS_STOP';
+const ROUTE_SELECTED = 'ROUTE_SELECTED';
+const LINK_BUS_STOP = 'LINK_BUS_STOP';
 
 const retrieveBusStops = busStops => ({
     type: RETRIEVE_BUS_STOPS,
@@ -27,10 +30,19 @@ const insertBusStop = (busStop) => ({
     busStop
 });
 
-const getBusStop = (busStop, routes) => ({
+const getBusStop = (busStop, routes, allRoutes) => ({
     type: GET_BUS_STOP,
-    busStop, routes
+    busStop, routes, allRoutes
 });
+
+const routeSelectedAction = (routeSelected) => ({
+    type: ROUTE_SELECTED,
+    routeSelected,
+})
+
+const linkBusStop = () => ({
+    type: LINK_BUS_STOP,
+})
 
 export function fetchBusStops() {
     return async (dispatch, getState) => {
@@ -55,11 +67,31 @@ export function fetchAndCreateBusStop() {
 export function fetchBusStop(id) {
     return async (dispatch, getState) => {
         const {authedToken} = getState().users;
-        const [busStop, routes] = await Promise.all([
+        const [busStop, routes, allRoutes] = await Promise.all([
             busStopsApi.fetchBusStop(id, authedToken),
-            busStopsApi.fetchBusStopRoutes(id, authedToken)
+            busStopsApi.fetchBusStopRoutes(id, authedToken),
+            routesApi.getRoutes(authedToken),
         ]);
-        dispatch(getBusStop(busStop, routes));
+        dispatch(getBusStop(busStop, routes, allRoutes));
+    }
+}
+
+export function handleRouteSelected(id) {
+    return dispatch => dispatch(routeSelectedAction(id));
+}
+
+export function handleLinkBusStop() {
+    return async (dispatch, getState) => {
+        const {routeSelected, busStopClicked} = getState().busStops;
+        const {authedToken} = getState().users;
+        const response = await busStopsApi.linkBusStop(busStopClicked, routeSelected, authedToken);
+        dispatch(linkBusStop());
+        const [busStop, routes, allRoutes] = await Promise.all([
+            busStopsApi.fetchBusStop(busStopClicked, authedToken),
+            busStopsApi.fetchBusStopRoutes(busStopClicked, authedToken),
+            routesApi.getRoutes(authedToken),
+        ]);
+        dispatch(getBusStop(busStop, routes, allRoutes));
     }
 }
 
@@ -73,7 +105,9 @@ export default createReducer(
         busStopClicked: null,
         mapClicked: false,
         clickLat: null,
-        clickLng: null
+        clickLng: null,
+        allRoutes: [],
+        routeSelected: null,
     },
     {
         RETRIEVE_BUS_STOPS: (state, action) => ({
@@ -97,12 +131,21 @@ export default createReducer(
                 ...state
             }
         },
-        GET_BUS_STOP : (state, {busStop, routes}) => ({
+        GET_BUS_STOP : (state, {busStop, routes, allRoutes}) => ({
             ...state,
             busStopClicked: busStop.id,
+            allRoutes,
             [busStop.id]: {
-                busStop, routes,
+                busStop, routes
             }
+        }),
+        ROUTE_SELECTED: (state, {routeSelected}) => ({
+            ...state,
+            routeSelected,
+        }),
+        LINK_BUS_STOP: (state, action) => ({
+            ...state,
+            routeSelected: null,
         })
     }
 )

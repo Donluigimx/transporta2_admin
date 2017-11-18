@@ -9,6 +9,8 @@ import * as busStopsActionCreators from "redux/modules/bus_stops";
 import Marker from "components/Map/Marker";
 import CreateBusStop, {CreateBusStopMessage} from "components/BusStops/CreateBusStop";
 import RoutesList from "components/BusStops/RoutesList";
+import LinkBusStop from "components/BusStops/LinkBusStop";
+import ArrowLeft from "react-icons/fa/arrow-left"
 
 class BusStopContainer extends Component {
 
@@ -42,7 +44,19 @@ class BusStopContainer extends Component {
     render() {
 
         let point;
-        const {mapClicked, busStops, location, clickLat, clickLng, busStopClicked} = this.props;
+        const {
+            mapClicked, 
+            busStops, 
+            location, 
+            clickLat, 
+            clickLng, 
+            busStopClicked,
+            linkRouteButtonClicked,
+            allRoutes,
+            handleLinkRouteButton,
+            handleRouteSelected,
+            handleLinkBusStop,
+        } = this.props;
 
         point = {
             lat: 21.510428,
@@ -68,15 +82,23 @@ class BusStopContainer extends Component {
                         const {busStop, routes} = this.props[params.id];
                         return (
                             <div>
+                                <Link to="/bus_stops" className="button" style={{marginBottom: "10px"}}><ArrowLeft/></Link>
                                 <RoutesList 
                                     busStop={busStop} 
                                     routes={routes} />
-                                <Link to="/bus_stops" className="button">Regresar</Link>
+                                <LinkBusStop 
+                                    routes={allRoutes.filter(obj => {
+                                        return !routes.some( someObj => {
+                                            return obj.id == someObj.id
+                                        });
+                                    })}
+                                    onSelectChange={handleRouteSelected}
+                                    onCreateLink={handleLinkBusStop} />
                             </div>
                         )
                     }
                 }}/>
-                <div style={{width: '500px', height: '500px', marginTop:'10px'}} className="is-centered">
+                <div style={{width: '100%', height: '500px', marginTop:'10px'}} className="is-centered">
                     <GoogleMapReact
                         bootstrapURLKeys={{
                             key: "AIzaSyCqywC5RqH6dyL8U6yMsplfVY-VVD_isX8",
@@ -103,7 +125,7 @@ class BusStopContainer extends Component {
                             ? <Marker lat={clickLat} lng={clickLng} pulse={true} bounce={true}/> : ''
                         }
                         {
-                            (location.pathname === `/bus_stops/detail/${busStopClicked}` && this.props.hasOwnProperty(busStopClicked))
+                            (this.props.hasOwnProperty(busStopClicked) && location.pathname === `/bus_stops/detail/${busStopClicked}`)
                             ? <Marker 
                                 lat={this.props[busStopClicked].busStop.point.lat} 
                                 lng={this.props[busStopClicked].busStop.point.lng}

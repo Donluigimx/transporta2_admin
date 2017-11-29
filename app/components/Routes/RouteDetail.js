@@ -41,18 +41,6 @@ export default props => {
                 </tbody>
             </table>
             <h1>Paradas de camión</h1>
-            {
-                props.mapIsClicked
-                ?<div>
-                    <h4>¿Deseas agregar una nueva parada de camión?</h4>
-                    <button className="button" onClick={()=>props.createBusStop(props.route.id)}>Agregar</button>
-                    <button className="button" onClick={props.stopClick}>Cancelar</button>
-                    <br/><br/>
-                </div>
-                : <div>
-                    <h4>Para agregar una parada de camión da click en cualquier parte del mapa.</h4>
-                </div>
-            }
             <div style={{width: '500px', height: '500px'}}>
                 <GoogleMapReact
                     bootstrapURLKeys={{
@@ -60,16 +48,7 @@ export default props => {
                         language: "es"
                     }}
                     center={point}
-                    zoom={8}
-                    onClick={props.onClick}>
-                    {props.mapIsClicked
-                        ? <Marker
-                            lat={props.lat}
-                            lng={props.lng}
-                            bounce={true}
-                            pulse={true}/>
-                        : ''
-                    }
+                    zoom={8}>
                     {
                         props.busStops.map((busStop, key) => (
                             <Marker
